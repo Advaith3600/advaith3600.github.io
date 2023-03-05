@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000;
+            font-family: 'Segoe UI', 'Helvetica Nueu', 'Arial', sans-serif;
+            color: white;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            grid-gap: 20px;
+            width: 400px;
+            height: 400px;
+            background-color: #000;
+            margin-top: 20px;
+        }
+
+        .grid button {
+            background-color: #fff;
+            border-radius: 8px;
+            transition: 200ms ease-in-out;
+            overflow: hidden;
+            border: none;
+        }
+
+        .grid button:not(.filled) {
+            cursor: pointer;
+        }
+
+        .grid button:not(.filled):hover {
+            transform: scale(1.1);
+        }
+
+        .item-x {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: grid;
+            place-content: center;
+            transform-origin: 50%;
+            transform: rotate(45deg);
+        }
+
+        .item-x::before,
+        .item-x::after {
+            content: "";
+            display: block;
+            width: 0px;
+            height: 8px;
+            background-color: #000;
+            border-radius: 100px;
+            transform-origin: 50%;
+            animation: animateWidth 200ms ease-in-out forwards;
+        }
+
+        .item-x::after {
+            transform: translateY(-100%);
+        }
+
+        .item-x::before {
+            transform: rotate(90deg);
+        }
+
+        .item-o {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: grid;
+            place-content: center;
+            opacity: 0;
+            animation: animateOpacity 200ms ease-in-out forwards;
+        }
+
+        .item-o::before {
+            content: "";
+            display: block;
+            width: 60px;
+            height: 60px;
+            border: 8px solid #000;
+            border-radius: 100px;
+        }
+
+        @keyframes animateWidth {
+            from {
+                width: 0
+            }
+
+            to {
+                width: 80px;
+            }
+        }
+
+        @keyframes animateOpacity {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        h1 {
+            font-size: 42px;
+        }
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"
+        integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Tic Tac Toe</h1>
+        <h3>Advaith A J</h3>
+        <div class="grid">
+            <button></button><button></button><button></button><button></button><button></button><button></button><button></button><button></button><button></button>
+        </div>
+    </div>
+
+    <script>
+        const winStates = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6]
+        ];
+        let state = 'x';
+
+        const reset = () => {
+            const buttons = document.querySelectorAll('.grid button');
+            buttons.forEach(button => {
+                button.innerHTML = '';
+                button.classList.remove('filled');
+            })
+        }
+
+        const checkWin = () => {
+            const buttons = document.querySelectorAll('.grid button');
+            const currentState = state;
+            let won = false;
+            winStates.forEach(state => {
+                if (buttons[state[0]].innerHTML === buttons[state[1]].innerHTML && buttons[state[1]].innerHTML === buttons[state[2]].innerHTML && buttons[state[0]].innerHTML !== '') {
+                    setTimeout(() => swal(`Player ${currentState === 'x' ? 'o' : 'x'} won!`, '', 'info').then(() => reset()), 10);
+                    won = true;
+                }
+            })
+
+            return won;
+        }
+
+        const checkGameDraw = () => {
+            const filled = document.querySelectorAll('.grid button.filled').length;
+
+            if (filled === 9) 
+                setTimeout(() => swal('Game Draw!', '', 'info').then(() => reset()), 10);
+        }
+
+        document.querySelectorAll('.grid button').forEach(button => {
+            button.addEventListener('click', event => {
+                if (button.classList.contains('filled')) return;
+                button.innerHTML = `<div class="item-${state}"></div>`;
+                button.classList.add('filled');
+                state = state === 'x' ? 'o' : 'x';
+
+                if (!checkWin()) checkGameDraw();
+            })
+        })
+    </script>
+</body>
+
+</html>
