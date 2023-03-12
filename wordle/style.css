@@ -36,6 +36,10 @@ h1 em {
   font-weight: 600;
 }
 
+.m-auto {
+  margin: auto;
+}
+
 /* === HEADING STYLE #1 === */
 h1 {
   text-align: center;
